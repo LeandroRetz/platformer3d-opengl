@@ -378,7 +378,18 @@ void gTimer(int valor)
 /* ----------------------------------------------------------------------------
  *  CAMERA
  * -------------------------------------------------------------------------- */
-void gAtualizaCamera(void) { /*STUB_CAMERA*/ }
+/* A camera orbital persegue o jogador suavemente (lerp por tick).
+ * yaw/pitch/distancia sao controlados pelo mouse; a posicao do olho e
+ * recalculada a partir do alvo em gDesenha. */
+void gAtualizaCamera(void)
+{
+    Vec3 atual = { g_camera.alvo_x, g_camera.alvo_y, g_camera.alvo_z };
+    Vec3 dest  = { g_jogador.x, g_jogador.y + 1.0f, g_jogador.z };
+    Vec3 novo  = vec3Lerp(atual, dest, 0.08f);   /* fator de seguimento */
+    g_camera.alvo_x = novo.x;
+    g_camera.alvo_y = novo.y;
+    g_camera.alvo_z = novo.z;
+}
 
 /* ----------------------------------------------------------------------------
  *  DESENHO
@@ -414,11 +425,39 @@ void gTeclado(unsigned char tecla, int x, int y)
 void gTeclaSolta(unsigned char tecla, int x, int y)
 { (void)tecla; (void)x; (void)y; /*STUB_TECLASOLTA*/ }
 
+/* Botao direito inicia/encerra o drag de orbita; roda do mouse faz zoom. */
 void gMouseBotao(int botao, int estado, int x, int y)
-{ (void)botao; (void)estado; (void)x; (void)y; /*STUB_MOUSEBOTAO*/ }
+{
+    if (botao == GLUT_RIGHT_BUTTON) {
+        if (estado == GLUT_DOWN) {
+            g_arrastando = 1;
+            g_posicao_x  = x;
+            g_posicao_y  = y;
+        } else {
+            g_arrastando = 0;
+        }
+    }
+    /* roda do mouse (freeglut: botoes 3 = cima, 4 = baixo) ajusta a distancia */
+    if (botao == 3 && estado == GLUT_DOWN) g_camera.distancia -= 1.0f;
+    if (botao == 4 && estado == GLUT_DOWN) g_camera.distancia += 1.0f;
+    if (g_camera.distancia < 8.0f)  g_camera.distancia = 8.0f;
+    if (g_camera.distancia > 16.0f) g_camera.distancia = 16.0f;
+}
 
+/* Arrasto com o botao direito gira a camera; pitch fica preso entre -60 e -10. */
 void gMouseMov(int x, int y)
-{ (void)x; (void)y; /*STUB_MOUSEMOV*/ }
+{
+    if (g_arrastando) {
+        int dx = x - g_posicao_x;
+        int dy = y - g_posicao_y;
+        g_camera.yaw   += dx * 0.30f;
+        g_camera.pitch -= dy * 0.30f;
+        if (g_camera.pitch < -60.0f) g_camera.pitch = -60.0f;
+        if (g_camera.pitch > -10.0f) g_camera.pitch = -10.0f;
+        g_posicao_x = x;
+        g_posicao_y = y;
+    }
+}
 
 void gRedimensiona(int largura, int altura)
 {
