@@ -1,9 +1,10 @@
 /* ============================================================================
  *  jogo_funcs.c  -  TODA a logica do Platformer 3D.
  *
- *  Esqueleto inicial: globais definidos e funcoes em stub. As implementacoes
- *  sao preenchidas etapa a etapa (geracao de nivel, fisica, camera, render,
- *  estados de jogo).
+ *  Contem: inicializacao, geracao procedural do nivel, fisica (gravidade,
+ *  pulo, coyote time, jump buffer, drag), colisao (gChaoEm + AABB lateral),
+ *  camera orbital, renderizacao (plataformas, jogador, estrelas, ceu, HUD),
+ *  entrada (teclado/mouse) e maquina de estados do jogo.
  * ========================================================================== */
 #include "main.h"
 
@@ -152,14 +153,16 @@ void gInicializaNivel(unsigned int semente)
         p->ativa = 1; p->eh_meta = 0;
         p->timer_fragil = -1.0f;
 
-        /* as 2 primeiras sempre estaticas (saida justa) */
-        if (i <= 2) {
+        /* saida (2 primeiras) e aproximacao da meta sempre estaticas */
+        if (i <= 2 || i == NUM_PLATAFORMAS - 2) {
             p->tipo = 0;
         } else {
             r = rand() % 100;
             if      (r < 20) p->tipo = 1;             /* movel  */
             else if (r < 38) p->tipo = 2;             /* fragil */
             else             p->tipo = 0;             /* estatica */
+            /* evita duas frageis seguidas (corredor impossivel) */
+            if (p->tipo == 2 && g_nivel[i - 1].tipo == 2) p->tipo = 0;
         }
 
         /* ~25% com estrela acima da plataforma */
