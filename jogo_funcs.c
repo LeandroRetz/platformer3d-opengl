@@ -1,11 +1,4 @@
-/* ============================================================================
- *  jogo_funcs.c  -  TODA a logica do Platformer 3D.
- *
- *  Contem: inicializacao, geracao procedural do nivel, fisica (gravidade,
- *  pulo, coyote time, jump buffer, drag), colisao (gChaoEm + AABB lateral),
- *  camera orbital, renderizacao (plataformas, jogador, estrelas, ceu, HUD),
- *  entrada (teclado/mouse) e maquina de estados do jogo.
- * ========================================================================== */
+
 #include "main.h"
  
 /* ----------------------------------------------------------------------------
@@ -120,7 +113,7 @@ void gInicializaNivel(unsigned int semente)
  
     srand(semente);
     g_total_estrelas = 0;
-    /* marca todas as estrelas como "coletadas" => so as posicionadas aparecem */
+
     for (i = 0; i < NUM_ESTRELAS; i++) g_estrelas[i].coletada = 1;
  
     /* ---- plataforma inicial: 6x6, segura, na origem ---- */
@@ -204,11 +197,6 @@ void gInicializaNivel(unsigned int semente)
 /* ----------------------------------------------------------------------------
  *  FISICA / COLISAO
  * -------------------------------------------------------------------------- */
-/* Consulta de chao: retorna o Y do topo da plataforma sob (x,z) que serve
- * de apoio para o jogador, ou -999 se nao houver nenhuma.
- * Considera apenas plataformas cujo topo esteja no nivel dos pes ou abaixo
- * (comportamento one-way: pousa-se vindo de cima). Tambem registra o indice
- * da plataforma escolhida em g_plat_suporte (usado p/ carregar moveis/fragil). */
 GLfloat gChaoEm(GLfloat x, GLfloat z)
 {
     int i, melhor = -1;
@@ -670,12 +658,6 @@ void gDesenhaPlataforma(Plataforma *p)
     gCaixa(x0, y0, z0, x1, y1, z1);
 }
  
-/* Boneco low poly inspirado no "Steve" (estilo Minecraft): cabeca cubica
- * grande, torso reto ("camisa" amarela com detalhe verde, inspirada na
- * selecao brasileira, sem reproduzir o escudo oficial), bracos e pernas em
- * caixas finas que balancam em oposicao durante a caminhada. Pele em tom
- * moreno. Paleta propria, so a linguagem visual "em blocos". Encara
- * g_jogador.yaw. */
 void gDesenhaJogador(void)
 {
     float bob = sinf(g_jogador.frame_passo * 0.4f) * 0.05f;  /* leve balanco */
@@ -686,12 +668,12 @@ void gDesenhaJogador(void)
         glTranslatef(g_jogador.x, g_jogador.y, g_jogador.z);
         glRotatef(g_jogador.yaw, 0.0f, 1.0f, 0.0f);
  
-        /* ---- torso ("camisa" amarela canarinho) ---- */
-        glColor3f(1.00f, 0.82f, 0.10f);                       /* amarelo    */
+
+        glColor3f(1.00f, 0.82f, 0.10f);                  
         gCaixa(-0.26f, 0.50f + bob, -0.16f,  0.26f, 1.10f + bob, 0.16f);
  
-        /* gola e punhos em verde, sugerindo o uniforme sem copiar o escudo */
-        glColor3f(0.05f, 0.45f, 0.20f);                       /* verde      */
+       
+        glColor3f(0.05f, 0.45f, 0.20f);                     
         gCaixa(-0.26f, 1.02f + bob, -0.16f,  0.26f, 1.10f + bob, 0.16f);
         gCaixa(-0.26f, 0.50f + bob, -0.16f,  0.26f, 0.56f + bob, 0.16f);
  
