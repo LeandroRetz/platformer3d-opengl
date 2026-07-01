@@ -234,7 +234,7 @@ void    gInicializaJogo(void);
 void    gInicializaNivel(unsigned int semente);
 
 /* atualizacao / fisica */
-void    gTimer(int valor);
+void    gTempoExecucao(int valor);
 void    gVerificaColisoes(void);
 GLfloat gChaoEm(GLfloat x, GLfloat z);
 int     gColide(Plataforma *p);

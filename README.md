@@ -20,7 +20,7 @@ Exatamente **3 arquivos** de código (mesma organização do projeto de referên
 | `main.c`        | apenas `glutInit`, criação da janela, registro de callbacks e `glutMainLoop` |
 | `jogo_funcs.c`  | **toda** a lógica: inicialização, geração de nível, física, colisão, câmera, renderização, entrada e estados |
 
-Convenções: funções com prefixo `g` (ex.: `gDesenha`, `gChaoEm`, `gTimer`) e
+Convenções: funções com prefixo `g` (ex.: `gDesenha`, `gChaoEm`, `gTempoExecucao`) e
 globais com prefixo `g_` (ex.: `g_jogador`, `g_nivel`, `g_camera`).
 
 ---

@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     glutIgnoreKeyRepeat(1);          
 
     gInicializa();
-    glutTimerFunc(16, gTimer, 0);
+    glutTimerFunc(16, gTempoExecucao, 0);
     glutMainLoop();
     return 0;
 }

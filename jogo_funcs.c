@@ -328,7 +328,7 @@ void gVerificaColisoes(void)
 }
  
 /* Loop fisico: roda a ~60 Hz com passo fixo (DT). */
-void gTimer(int valor)
+void gTempoExecucao(int valor)
 {
     int i;
     (void)valor;
@@ -342,13 +342,12 @@ void gTimer(int valor)
     }
  
     if (g_estado == ESTADO_JOGANDO) {
-        /* --- 1. plataformas: moveis oscilam, frageis contam o tempo --- */
         for (i = 0; i < NUM_PLATAFORMAS; i++) {
             Plataforma *p = &g_nivel[i];
             if (!p->ativa) continue;
             if (p->tipo == 1) {
                 float novo = p->base_z + sinf(g_tempo * 1.5f + p->fase) * 1.6f;
-                p->delta_z = novo - p->z;   /* delta usado p/ carregar o jogador */
+                p->delta_z = novo - p->z;   
                 p->delta_x = 0.0f;
                 p->z = novo;
             } else {
@@ -361,7 +360,7 @@ void gTimer(int valor)
             }
         }
  
-        /* carrega o jogador junto da plataforma movel onde esta apoiado */
+
         if (g_plat_suporte >= 0 && g_jogador.no_chao &&
             g_nivel[g_plat_suporte].ativa && g_nivel[g_plat_suporte].tipo == 1) {
             g_jogador.x += g_nivel[g_plat_suporte].delta_x;
@@ -464,7 +463,7 @@ void gTimer(int valor)
  
     gAtualizaCamera();
     glutPostRedisplay();
-    glutTimerFunc(16, gTimer, 0);
+    glutTimerFunc(16, gTempoExecucao, 0);
 }
  
 /* ----------------------------------------------------------------------------
